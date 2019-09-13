@@ -14,8 +14,8 @@ for t in f.tracks:
 			if msg.type == 'set_tempo':
 				tempo = msg.tempo
 			continue
-		if msg.time != 0 and msg.note != 0:
-			period = 1e6 / (440 * 2**((msg.note - 69) / 12))
+		if msg.time != 0 and curnote != None:
+			period = 1e6 / (440 * 2**((curnote - 69) / 12))
 			p1 = int(np.floor((period - 25) / 9))
 			p2 = int(np.ceil((period - 25) / 9))
 			pp1 = np.abs(p1 * 9 + 25 - period)
@@ -29,7 +29,10 @@ for t in f.tracks:
 			print('.Word {:o}'.format(q))
 			print('.Word {:o}'.format(p))
 		if msg.type == 'note_on':
-			curnote = msg.note
+			if msg.velocity != 0:
+				curnote = msg.note
+			else:
+				curnote = None
 		elif msg.type == 'note_off':
 			curnote = None
 	break

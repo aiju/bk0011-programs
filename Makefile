@@ -8,6 +8,7 @@ all: mono.wav polyb.wav
 
 mono.obj: monodata.asm
 polyb.obj: polydata.asm
+polyd.obj: polydata.asm
 
 monodata.asm: monophon.py
 	python3 monophon.py > $@
