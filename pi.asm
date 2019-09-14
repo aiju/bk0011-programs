@@ -1,0 +1,164 @@
+.ASECT
+
+. = 10000
+
+A = 40000
+N = 17776
+
+B = 11000
+C = 11002
+D = 11004
+E = 11010
+P = 11012
+O = 11014
+
+;BSTR = 65
+BSTR = 20
+
+	MOV #1000, SP
+
+
+	MOV #A, R0
+	MOV #N, R1
+	MOV #3720, R2
+10$:	MOV R2, (R0)+
+	SOB R1, 10$
+
+	CLR B
+	MOV #N, C
+	CLR E
+	CLR D
+	CLR D+2
+	MOV #5015, O
+	MOV #5015, O+2
+	MOVB #200, O+4
+	MOV #O, R0
+	EMT BSTR
+
+20$:	SUB #16, C
+	BEQ 100$
+	MOV C, B
+	MOV C, P
+	ASL P
+	ADD #A, P
+
+	CLR R0
+	CLR R1
+	MOV D, R2
+	MOV D+2, R3
+	MOV #23420, R4
+	JSR PC, Div32
+	MOV R1, E
+
+30$:	; (R0,R1) = D
+	DEC B
+	BEQ 40$
+	SUB #2, P
+	
+	CLR R3
+	CLR R4
+	MOV B, R2
+	JSR PC, Mac
+
+	CLR R0
+	MOV #23420, R1
+	MOV @P, R2
+	JSR PC, Mac
+
+	MOV R3, R0
+	MOV R4, R3
+	MOV R0, R2
+	CLR R0
+	CLR R1
+	MOV B, R4
+	ASL R4
+	DEC R4
+	JSR PC, Div32
+	MOV R1, @P
+	MOV R2, R0
+	MOV R3, R1
+
+	BR 30$
+
+40$:	MOV R0, D
+	MOV R1, D+2
+	MOV #23420, R2
+	JSR PC, Div16
+	ADD E, R1
+
+	MOV #O+4, R3
+	MOV #4, R4
+50$:	CLR R0
+	MOV #12, R2
+	JSR PC, Div16
+	ADD #60, R0
+	MOVB R0, -(R3)
+	SOB R4, 50$
+
+	MOV #O, R0
+	EMT BSTR
+
+	BR 20$
+
+100$:	HALT
+
+; (R3,R4) += (R0,R1) * R2
+Mac::
+10$:	CLC
+	ROR R2
+	BEQ 40$
+	BCC 30$
+20$:	ADD R1, R4
+	ADC R3
+	ADD R0, R3
+30$:	ASL R1
+	ROL R0
+	BR 10$
+40$:	BCC 50$
+	ADD R1, R4
+	ADC R3
+	ADD R0, R3
+50$:	RTS PC
+
+; (R0, R1) / R2
+; rem R0
+; quot R1
+Div16::
+	MOV #20, R5
+10$:	ASL R1
+	ROL R0
+	BCC 20$
+	ADD R2, R0
+15$:	BMI 30$
+	INC R1
+30$:	SOB R5, 10$
+	TST R0
+	BPL 40$
+	ADD R2, R0
+40$:	RTS PC
+20$:	SUB R2, R0
+	BR 15$
+
+; (R0, R1, R2, R3) / R4
+; rem (R0,R1)
+; quot (R2,R3)
+Div32::
+	MOV #40, R5
+10$:	ASL R3
+	ROL R2
+	ROL R1
+	ROL R0
+	BCC 20$
+	ADD R4, R1
+	ADC R0
+15$:	BMI 30$
+	INC R3
+30$:	SOB R5, 10$
+	TST R0
+	BPL 40$
+	ADD R4, R1
+	ADC R0
+40$:	RTS PC
+20$:	SUB R4, R1
+	SBC R0
+	BR 15$
