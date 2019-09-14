@@ -9,12 +9,13 @@ all: mono.wav polyb.wav
 mono.obj: monodata.asm
 polyb.obj: polydata.asm
 polyd.obj: polydata.asm
+polye.obj: polydata.asm
 
 monodata.asm: monophon.py
 	python3 monophon.py > $@
 
-polydata.asm: polyphon.py
-	python3 polyphon.py > $@
+polydata.asm: midiread.py
+	python3 midiread.py > $@
 
 logo.asm: logorle.py logo.png
 	python3 logorle.py > $@

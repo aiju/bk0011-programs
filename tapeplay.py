@@ -15,7 +15,7 @@ data = np.fromfile(sys.argv[1], dtype='uint8')
 header = np.zeros(20, np.uint8)
 header[0:4] = data[0:4]
 data = data[4:]
-name = [ord(c) for c in 'GLORY TO USSR']
+name = [ord(c) for c in 'X']
 header[4:4+len(name)] = name
 header[4+len(name):] = ord(' ')
 
