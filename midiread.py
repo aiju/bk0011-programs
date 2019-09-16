@@ -20,6 +20,26 @@ class DeltaList:
 		return self.l.__str__()
 	def __len__(self):
 		return self.l.__len__()
+	
+def staccato(f, g=2):
+	for t in f.tracks:
+		notes = {}
+		tim = 0
+		for m in t:
+			tim += m.time
+			m.time = tim
+			if m.type == 'note_on' and m.velocity != 0:
+				notes[m.note] = tim
+			elif m.type == 'note_on' or m.type == 'note_off':
+				if m.note in notes:
+					if tim - notes[m.note] > g:
+						m.time -= g
+					del notes[m.note]
+		t.sort(key=lambda x: m.time)
+		tim = 0
+		for m in t:
+			m.time, tim = m.time - tim, m.time
+	return f
 
 def readmidi(f):
 	tracks = [t[:] for t in f.tracks]
@@ -160,6 +180,7 @@ def output(l):
 		print('End{}::'.format(n))
 
 f = mido.MidiFile('/home/aiju/Downloads/liberty_fixed.mid')
+f = staccato(f)
 n = readmidi(f)
 #n = cutoff(n, 60)
 n = selectnotes(n)
