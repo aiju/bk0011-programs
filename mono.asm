@@ -71,9 +71,9 @@ LPtr:: .Word 0
 BlCtr:: .Word 0
 
 Track::
-	.INCLUDE monodata.asm
+	.INCLUDE b/monosoviet.asm
 EndTr::
 
 Logo::
-	.INCLUDE logo.asm
+	.INCLUDE b/logo.asm
 EndL::

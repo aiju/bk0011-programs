@@ -4,8 +4,7 @@ import mido
 import numpy as np
 import sounddevice as sd
 
-f = mido.MidiFile(sys.args[1])
-
+f = mido.MidiFile(sys.argv[1])
 
 tracks = []
 for t in f.tracks:
