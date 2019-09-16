@@ -37,7 +37,7 @@ TIMCTL = 177712
 	MOV A+Ptr, R1
 	CMP R1, #E
 	BNE M
-	HALT
+	BR .
 M:	Load A
 .ENDM
 	
@@ -150,9 +150,3 @@ C::
 	.Word 0
 	.Word 0
 DCtr::	.Word 0
-
-.include polydata.asm
-
-Logo::
-.include logo.asm
-EndL::

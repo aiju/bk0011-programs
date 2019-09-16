@@ -2,3 +2,5 @@
 *.obj
 monodata.asm
 polydata.asm
+b/*
+link

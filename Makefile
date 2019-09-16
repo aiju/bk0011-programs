@@ -1,27 +1,20 @@
 all: mono.wav polyb.wav
 
-%.obj: %.asm
+b/%.obj: %.asm
 	macro11/macro11 -l /dev/stdout -o $@ $<
 
-%.bin: %.obj | link
+b/%.bin: b/%.obj | link
 	./link -o $@ $<
 
-mono.obj: monodata.asm
-polyb.obj: polydata.asm
-polyd.obj: polydata.asm
-polye.obj: polydata.asm
+b/monty.obj: polygfx.asm b/liberty.asm b/foot.asm
 
-monodata.asm: monophon.py
-	python3 monophon.py > $@
+b/liberty.asm: midiread.py midi/liberty.mid
+	./midiread.py --staccato midi/liberty_short.mid > $@
 
-polydata.asm: midiread.py
-	python3 midiread.py > $@
+b/foot.asm: logorle.py foot.png
+	./logorle.py foot.png > $@
 
-logo.asm: logorle.py logo.png
-	python3 logorle.py > $@
-
-
-%.wav: %.bin
+%.wav: b/%.bin
 	./tapeplay.py $< $@
 	
 link: link.c

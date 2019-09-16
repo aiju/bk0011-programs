@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import argparse
+import sys
 import mido
 import itertools
 
@@ -179,12 +181,23 @@ def output(l):
 			print('.Word {:o}'.format(note))
 		print('End{}::'.format(n))
 
-f = mido.MidiFile('/home/aiju/Downloads/liberty_fixed.mid')
-f = staccato(f)
+parser = argparse.ArgumentParser()
+parser.add_argument('file', metavar='FILE')
+parser.add_argument('--staccato', action='store_true')
+parser.add_argument('--simulate', action='store_true')
+parser.add_argument('--cutoff')
+args = parser.parse_args()
+
+f = mido.MidiFile(args.file)
+if args.staccato:
+	f = staccato(f)
 n = readmidi(f)
-#n = cutoff(n, 60)
+if args.cutoff is not None:
+	n = cutoff(n, args.cutoff)
 n = selectnotes(n)
 n = splitchans(n)
 n = convert(n)
-#simulate(n)
-output(n)
+if args.simulate:
+	simulate(n)
+else:
+	output(n)

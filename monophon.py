@@ -1,8 +1,10 @@
+#!/usr/bin/python3
+import sys
 import mido
 import numpy as np
 import sounddevice as sd
 
-f = mido.MidiFile('Soviet_Anthem.mid')
+f = mido.MidiFile(sys.args[1])
 
 
 tracks = []
